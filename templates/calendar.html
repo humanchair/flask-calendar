@@ -23,17 +23,17 @@
                 <a href="/{{ calendar_id }}/">back to current</a>
             </div>
         {% endif %}
-        <a id="toggle-past-events" class="button toggle-past-events" href="" onclick="ToggleViewPastTasks();" title="Toggle viewing past events">View Past</a>
+{#        <a id="toggle-past-events" class="button toggle-past-events" href="" onclick="ToggleViewPastTasks();" title="Toggle viewing past events">View Past</a>#}
     </div>
 
     <ul class="calendar-header">
-        <li class="weekday-header">Mon</li>
-        <li class="weekday-header">Tue</li>
-        <li class="weekday-header">Wed</li>
-        <li class="weekday-header">Thu</li>
-        <li class="weekday-header">Fri</li>
-        <li class="weekday-header">Sat</li>
-        <li class="weekday-header">Sun</li>
+        <li class="weekday-header">星期一</li>
+        <li class="weekday-header">星期二</li>
+        <li class="weekday-header">星期三</li>
+        <li class="weekday-header">星期四</li>
+        <li class="weekday-header">星期五</li>
+        <li class="weekday-header">星期六</li>
+        <li class="weekday-header">星期日</li>
     </ul>
 
     <ul class="calendar" id="calendar">
@@ -67,20 +67,20 @@
                                             data-title="{{ task["title"]|replace("\"","") }}"
                                             class="button smaller remove-task"
                                             title="Remove task">x</a>
-                                        {% if "repetition_type" in task %}
-                                         <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"
-                                            data-month="{{ day.month }}"
-                                            data-day="{{ day.day }}"
-                                            data-title="{{ task["title"]|replace("\"","") }}"
-                                            class="button smaller hide-recurrent-task"
-                                            title="Hide this task ocurrence">H</a>
-                                        {% endif %}
+{#                                        {% if "repetition_type" in task %}#}
+{#                                         <a href="#" data-id="{{ task["id"] }}" data-year="{{ day.year }}"#}
+{#                                            data-month="{{ day.month }}"#}
+{#                                            data-day="{{ day.day }}"#}
+{#                                            data-title="{{ task["title"]|replace("\"","") }}"#}
+{#                                            class="button smaller hide-recurrent-task"#}
+{#                                            title="Hide this task ocurrence">H</a>#}
+{#                                        {% endif %}#}
                                          <a href="/{{ calendar_id }}/{{ day.year }}/{{ day.month }}/{{ day.day }}/{{ task["id"] }}{% if "repetition_type" in task %}?repeats=1{% endif %}"
                                             class="button smaller edit-task"
                                             title="Edit task">E</a>
-                                        {% if "repetition_type" in task %}
-                                        <span class="button smaller recurrent-task" title="Recurent task">R</span>
-                                        {% endif %}
+{#                                        {% if "repetition_type" in task %}#}
+{#                                        <span class="button smaller recurrent-task" title="Recurent task">R</span>#}
+{#                                        {% endif %}#}
                                     </p>
                                 </li>
                             {% endfor %}

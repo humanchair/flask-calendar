@@ -6,6 +6,15 @@
 
 I recently (dec 2017) decided I wanted to opt out from Google services as much as possible. One of the services that tied me most was Calendar. There are not many alternatives, and even fewer web-based. I decided to try using a Trello board with due dates and some labels for a while, but proved to be harder to maintain. Add the lack of a month calendar view, and no support for recurrent/repetitive tasks, and I decided to do good use of a holidays to spend some hours and build a simple GCalendar clone.
 
+### Changes from orginal
+- Add event "index/count" when show the event on the calender
+- Add a 'Customized' option when creating repeat events
+- Add a random color when creating a new task which no need pick a color every time
+- Change with no events before the start day
+- A little change with the 'weekly' repeat events
+- A little change with the 'monthly' repeat events
+- Remove the 'R' 'H' options when click on the events
+
 
 ### Details
 
@@ -75,6 +84,10 @@ Other requirements are on the `requirements.txt` file. Install them with `pip` o
 ### Development
 
 - Docker and Docker Compose
+- local test
+```
+# export FLASK_APP=app.py; flask run
+```
 
 ## Running
 

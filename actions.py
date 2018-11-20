@@ -1,4 +1,4 @@
-
+import random
 import re
 from typing import Optional  # noqa: F401
 
@@ -11,7 +11,6 @@ from calendar_data import CalendarData
 from authentication import Authentication
 from app_utils import (previous_month_link, next_month_link, new_session_id, add_session, authenticated,
                        get_session_username, authorized, export_to_icalendar)
-
 
 authentication = Authentication(
     data_folder=config.USERS_DATA_FOLDER, password_salt=config.PASSWORD_SALT,
@@ -99,7 +98,10 @@ def new_task_action(calendar_id: str, year: int, month: int) -> Response:
     task = {
         "date": CalendarData.date_for_frontend(year=year, month=month, day=day),
         "is_all_day": True,
-        "repeats": False,
+        "repeats": True,
+        # "repeats": False,
+        "repetition_type": "c",
+        "color": "#" + ''.join([random.choice('0123456789ABCDEF') for j in range(6)]),
         "details": ""
     }
 
@@ -173,20 +175,35 @@ def update_task_action(calendar_id: str, year: str, month: str, day: str, task_i
     repetition_type = request.form.get("repetition_type", "")
     repetition_subtype = request.form.get("repetition_subtype", "")
     repetition_value = int(request.form["repetition_value"])  # type: int
+    customized_total_repeat = request.form.get("total_value")
 
-    calendar_data.create_task(calendar_id=calendar_id,
-                              year=updated_year,
-                              month=updated_month,
-                              day=updated_day,
-                              title=title,
-                              is_all_day=is_all_day,
-                              due_time=due_time,
-                              details=details,
-                              color=color,
-                              has_repetition=has_repetition,
-                              repetition_type=repetition_type,
-                              repetition_subtype=repetition_subtype,
-                              repetition_value=repetition_value)
+    calendar_data.create_customized_task(calendar_id=calendar_id,
+                                         year=updated_year,
+                                         month=updated_month,
+                                         day=updated_day,
+                                         title=title,
+                                         is_all_day=is_all_day,
+                                         due_time=due_time,
+                                         details=details,
+                                         color=color,
+                                         has_repetition=has_repetition,
+                                         repetition_type=repetition_type,
+                                         repetition_value=repetition_value,
+                                         customized_total_repeat=customized_total_repeat)
+
+    # calendar_data.create_task(calendar_id=calendar_id,
+    #                           year=updated_year,
+    #                           month=updated_month,
+    #                           day=updated_day,
+    #                           title=title,
+    #                           is_all_day=is_all_day,
+    #                           due_time=due_time,
+    #                           details=details,
+    #                           color=color,
+    #                           has_repetition=has_repetition,
+    #                           repetition_type=repetition_type,
+    #                           repetition_subtype=repetition_subtype,
+    #                           repetition_value=repetition_value)
     # For deletion of old task data use only url data
     calendar_data.delete_task(calendar_id=calendar_id,
                               year_str=year,
@@ -219,23 +236,43 @@ def save_task_action(calendar_id: str) -> Response:
     color = request.form["color"]
     has_repetition = request.form.get("repeats", "0") == "1"
     repetition_type = request.form.get("repetition_type")
-    repetition_subtype = request.form.get("repetition_subtype")
+    customized_total_repeat = request.form.get("total_value")
     repetition_value = int(request.form["repetition_value"])
+    if repetition_type == "w":
+        customized_total_repeat = request.form.get("weekly_total_value")
+        repetition_value = int(request.form["weekly_repetition_value"])
+    elif repetition_type == "m":
+        customized_total_repeat = request.form.get("monthly_total_value")
+        repetition_value = int(request.form["monthly_repetition_value"])
 
     calendar_data = CalendarData(config.DATA_FOLTER)
-    calendar_data.create_task(calendar_id=calendar_id,
-                              year=year,
-                              month=month,
-                              day=day,
-                              title=title,
-                              is_all_day=is_all_day,
-                              due_time=due_time,
-                              details=details,
-                              color=color,
-                              has_repetition=has_repetition,
-                              repetition_type=repetition_type,
-                              repetition_subtype=repetition_subtype,
-                              repetition_value=repetition_value)
+    # create_customized_task
+    calendar_data.create_customized_task(calendar_id=calendar_id,
+                                         year=year,
+                                         month=month,
+                                         day=day,
+                                         title=title,
+                                         is_all_day=is_all_day,
+                                         due_time=due_time,
+                                         details=details,
+                                         color=color,
+                                         has_repetition=has_repetition,
+                                         repetition_type=repetition_type,
+                                         repetition_value=repetition_value,
+                                         customized_total_repeat=customized_total_repeat)
+    # calendar_data.create_task(calendar_id=calendar_id,
+    #                           year=year,
+    #                           month=month,
+    #                           day=day,
+    #                           title=title,
+    #                           is_all_day=is_all_day,
+    #                           due_time=due_time,
+    #                           details=details,
+    #                           color=color,
+    #                           has_repetition=has_repetition,
+    #                           repetition_type=repetition_type,
+    #                           repetition_subtype=repetition_subtype,
+    #                           repetition_value=repetition_value)
     export_to_icalendar(calendar_data, calendar_id)
 
     if year is None:
