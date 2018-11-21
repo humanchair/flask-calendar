@@ -25,10 +25,6 @@ class CalendarData:
     # customized type
     REPETITION_TYPE_CUSTOMIZED = "c"
 
-    # FROM DAY : x
-    # repeat every x days
-    # total repeats : x (total)
-
     def __init__(self, data_folder: str) -> None:
         self.data_folder = data_folder
 
@@ -117,7 +113,6 @@ class CalendarData:
         task["repeats"] = True
         task["date"] = self.date_for_frontend(year=year, month=month,
                                               day=int(str(task[KEY_REPEAT_BEGIN]).split("-")[2]))
-        # task["date"] = self.date_for_frontend(year=year, month=month, day=1)
         return task
 
     @staticmethod
@@ -256,8 +251,6 @@ class CalendarData:
             # new_task["repetition_subtype"] = repetition_subtype
             new_task[KEY_REPEAT_VALUE] = repetition_value
 
-            # if repetition_type == self.REPETITION_TYPE_CUSTOMIZED:
-            new_task["customized_repeat_value"] = repetition_value
             new_task[KEY_REPEAT_TOTAL] = customized_total_repeat
             new_task[KEY_REPEAT_BEGIN] = str(year) + "-" + str(month) + "-" + str(day)
             data[KEY_TASKS][KEY_REPETITIVE_TASK].append(new_task)
@@ -312,7 +305,6 @@ class CalendarData:
 
         for task in data[KEY_TASKS][KEY_REPETITIVE_TASK]:
             id_str = str(task["id"])
-            monthly_task_assigned = False
 
             for week in month_days:
                 for weekday, day in enumerate(week):
@@ -348,8 +340,8 @@ class CalendarData:
                                 and (month + (12 * (year - int(begin_year)))) >= int(begin_month) \
                                 and year >= int(begin_year):
                             if (month - int(begin_month) + (12 * (year - int(begin_year)))) % int(repeat_freq) == 0 \
-                                    and (month - int(begin_month) + (12 * (year - int(begin_year)))) / int(
-                                repeat_freq) < int(total_repeats):
+                                    and (month - int(begin_month) + (12 * (year - int(begin_year)))) / int(repeat_freq) \
+                                    < int(total_repeats):
                                 task_with_count = deepcopy(task)
                                 task_with_count["title"] = task["title"] + "(" + str(
                                     int((month + (12 * (year - int(begin_year)))) - int(begin_month) + 1)) + "/" + total_repeats + ")"
@@ -358,8 +350,6 @@ class CalendarData:
                         if self._is_repetition_hidden_for_day(data, id_str, year_str, month_str, str(day)):
                             continue
                         if (KEY_REPEAT_TOTAL in task.keys()) and (KEY_REPEAT_BEGIN in task.keys()):
-                            # as there is a begin day, so we only check the future, not the past
-                            # if int(days_range_timedelta.days) >= 0:
                             if (int(days_range_timedelta.days) % int(repeat_freq) == 0) and (
                                     int(days_range_timedelta.days) / int(repeat_freq) < int(total_repeats)):
                                 task_with_count = deepcopy(task)
